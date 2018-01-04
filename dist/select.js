@@ -1,7 +1,7 @@
 /*!
  * ui-select
  * http://github.com/angular-ui/ui-select
- * Version: 0.19.9-CT5 - 2018-01-03T09:30:47.370Z
+ * Version: 0.19.9-CT6 - 2018-01-04T13:27:06.278Z
  * License: MIT
  */
 
@@ -182,6 +182,26 @@ var uis = angular.module('ui.select', [])
       left: boundingClientRect.left + ($window.pageXOffset || $document[0].documentElement.scrollLeft)
     };
   };
+}])
+
+/**
+* Gets an elements inner width (width minus padding)
+*/
+.factory('uisElementInnerWidth',
+  ['$window',
+  function ($window) {
+    return $window.jQuery ? getInnerWidthJQuery : getInnerWidth;
+
+    function getInnerWidthJQuery(element) {
+      return element.width();
+    }
+
+    function getInnerWidth(element) {
+      var style = $window.getComputedStyle(element[0]);
+      var paddingLeft = parseFloat(style.getPropertyValue('padding-left'));
+      var paddingRight = parseFloat(style.getPropertyValue('padding-right'));
+      return element[0].clientWidth - paddingLeft - paddingRight;
+    }
 }]);
 
 /**
@@ -307,8 +327,8 @@ uis.directive('uiSelectChoices',
  * put as much logic in the controller (instead of the link functions) as possible so it can be easily tested.
  */
 uis.controller('uiSelectCtrl',
-  ['$scope', '$element', '$timeout', '$filter', '$$uisDebounce', 'uisRepeatParser', 'uiSelectMinErr', 'uiSelectConfig', '$parse', '$injector', '$window',
-  function($scope, $element, $timeout, $filter, $$uisDebounce, RepeatParser, uiSelectMinErr, uiSelectConfig, $parse, $injector, $window) {
+  ['$scope', '$element', '$timeout', '$filter', '$$uisDebounce', 'uisRepeatParser', 'uiSelectMinErr', 'uiSelectConfig', '$parse', '$injector', '$window', 'uisElementInnerWidth',
+   function($scope, $element, $timeout, $filter, $$uisDebounce, RepeatParser, uiSelectMinErr, uiSelectConfig, $parse, $injector, $window, uisElementInnerWidth) {
 
   var ctrl = this;
 
@@ -839,10 +859,10 @@ uis.controller('uiSelectCtrl',
   ctrl.sizeSearchInput = function() {
 
     var input = ctrl.searchInput[0],
-        container = ctrl.$element[0],
-        calculateContainerWidth = function() {
+
+    calculateContainerWidth = function() {
           // Return the container width only if the search input is visible
-          return container.clientWidth * !!input.offsetParent;
+          return uisElementInnerWidth(ctrl.$element) * !!input.offsetParent;
         },
         updateIfVisible = function(containerWidth) {
           if (containerWidth === 0) {
