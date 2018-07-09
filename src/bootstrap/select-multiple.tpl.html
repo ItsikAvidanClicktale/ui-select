@@ -2,7 +2,7 @@
   <div>
     <div class="ui-select-match"></div>
     <span ng-show="$select.open && $select.refreshing && $select.spinnerEnabled" class="ui-select-refreshing {{$select.spinnerClass}}"></span>
-    <span class="search-container" ng-class="{'has-placeholder': $select.getPlaceholder, 'has-search-text': $select.search}">
+    <span class="search-container" ng-class="{'has-placeholder': $select.getPlaceholder(), 'has-search-text': $select.search}">
       <input type="search"
             autocomplete="off"
             autocorrect="off"
