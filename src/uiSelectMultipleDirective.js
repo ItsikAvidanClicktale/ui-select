@@ -216,6 +216,10 @@ uis.directive('uiSelectMultiple', ['uiSelectMinErr','$timeout', function(uiSelec
       }
       // Handles selected options in "multiple" mode
       function _handleMatchSelection(key){
+        // Handle deletion of highlighted text
+        if ($select.search && window.getSelection().toString() === $select.search)
+        return false;
+
         var caretPosition = _getCaretPosition($select.searchInput[0]),
             length = $select.selected.length,
             // none  = -1,
