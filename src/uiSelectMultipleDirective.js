@@ -214,11 +214,24 @@ uis.directive('uiSelectMultiple', ['uiSelectMinErr','$timeout', function(uiSelec
         // selectionStart is not supported in IE8 and we don't want hacky workarounds so we compromise
         else return el.value.length;
       }
+
+      // Test if the search string is highlighted so deletion of highlighted text will work
+      function isSearchTextHighlighted() {
+        if ($select.search) {
+          if (window.getSelection().type.toLowerCase() === "range") {
+            if (~$select.search.indexOf(window.getSelection().toString())) {
+              return true;
+            }
+          }
+        }
+      }
+
       // Handles selected options in "multiple" mode
       function _handleMatchSelection(key){
         // Handle deletion of highlighted text
-        if ($select.search && window.getSelection().toString() === $select.search)
-        return false;
+        if (isSearchTextHighlighted()) {
+          return false;
+        }   
 
         var caretPosition = _getCaretPosition($select.searchInput[0]),
             length = $select.selected.length,
